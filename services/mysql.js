@@ -25,9 +25,6 @@ connection.connect(function (err) {
     if (err) {
         throw new Error(`Can't connect to MySQL`);
     }
-
-    console.log('MYSQL: CONNECT');
-
 });
 
 module.exports = connection;
