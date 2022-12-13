@@ -1,31 +1,43 @@
 'use strict';
 
-var bookHelper = require('../../database/helper/book.helper');
+import {ApolloServerErrorCode} from '@apollo/server/errors';
+import {GraphQLError} from 'graphql';
+import {BookHelper} from "../../database/helper/book.helper.js";
 
-const {
-    AuthenticationError,
-    ForbiddenError,
-    UserInputError,
-    ApolloError
-} = require('apollo-server-express');
+const bookHelper = new BookHelper();
 
-var bookResolvers = {
+export const bookResolvers = {
     Query: {
         books: (parent, args) => {
             return bookHelper.getAll(args.genreId);
         },
         book: (parent, args) => {
-            //throw new ApolloError('Error retrieving values from database', 500, { id: args.id});
-            //throw new AuthenticationError('Autentication required');
-            //throw new ForbiddenError('Insufficient privileges');
-            //throw new UserInputError('Invalid parameter', {field:'id'});
+
+            // throw new GraphQLError('Invalid parameter', {
+            //     extensions: {
+            //         code: ApolloServerErrorCode.BAD_USER_INPUT,
+            //         parameter: 'id',
+            //         http: {
+            //             status: 400
+            //         }
+            //     },
+            // });
+
+            // throw new GraphQLError('Error retrieving book from database', {
+            //     extensions: {
+            //         code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+            //         bookId: args.id,
+            //         http: {
+            //             status: 500
+            //         }
+            //     },
+            // });
 
             return bookHelper.getById(args.id);
         }
     },
     Mutation: {
         addBook: (parent, args) => {
-
             return bookHelper.addBook(
                 args.name,
                 args.genreId,
@@ -34,5 +46,3 @@ var bookResolvers = {
         }
     }
 };
-
-module.exports = bookResolvers;

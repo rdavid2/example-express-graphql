@@ -1,6 +1,6 @@
 'use strict';
 
-class Genre {
+export class Genre {
     constructor(
         id,
         name
@@ -9,5 +9,3 @@ class Genre {
         this.name = name;
     }
 }
-
-module.exports = Genre;

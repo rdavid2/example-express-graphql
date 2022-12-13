@@ -1,11 +1,11 @@
 'use strict';
 
-const bookType = require("./book.type");
-const genreType = require("./genre.type");
-const authorType = require("./author.type");
+import {BookType} from "./book.type.js";
+import {GenreType} from "./genre.type.js";
+import {AuthorType} from "./author.type.js";
 
-module.exports = {
-    bookType,
-    genreType,
-    authorType
+export {
+    BookType,
+    GenreType,
+    AuthorType
 };

@@ -1,8 +1,6 @@
 'use strict';
 
-const {gql} = require('apollo-server-express');
-
-var AuthorType = gql`
+export const AuthorType = `#graphql
     type Author {
         id: ID!
         name: String!
@@ -19,5 +17,3 @@ var AuthorType = gql`
         ): Author
     }
 `;
-
-module.exports = AuthorType;

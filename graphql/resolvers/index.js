@@ -1,10 +1,10 @@
 'use strict';
 
-const bookResolvers = require('./book.resolver');
-const genreResolvers = require('./genre.resolver');
-const authorResolvers = require('./author.resolver');
+import {bookResolvers} from './book.resolver.js';
+import {genreResolvers} from './genre.resolver.js';
+import {authorResolvers} from './author.resolver.js';
 
-module.exports = {
+export {
     bookResolvers,
     genreResolvers,
     authorResolvers

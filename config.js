@@ -1,13 +1,13 @@
 'use strict';
 
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 
 const result = dotenv.config();
 if (result.error) {
     throw new Error(`Can't load .env file`);
 }
 
-var config = {
+export default {
     environment: process.env.NODE_ENV,
 
     port: parseInt(process.env.PORT, 10),
@@ -22,6 +22,3 @@ var config = {
 
     maxUploadSize: process.env.MAX_UPLOAD_SIZE
 };
-
-
-module.exports = config;

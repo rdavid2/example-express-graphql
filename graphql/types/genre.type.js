@@ -1,8 +1,6 @@
 'use strict';
 
-const {gql} = require('apollo-server-express');
-
-var GenreType = gql`
+export const GenreType = `#graphql
     type Genre {
         id: ID!
         name: String!
@@ -17,7 +15,4 @@ var GenreType = gql`
             name: String!
         ): Genre
     }
-    
 `;
-
-module.exports = GenreType;

@@ -1,8 +1,10 @@
 'use strict';
 
-var authorDao = require('../../database/dao/author.dao');
+import {AuthorDao} from "../../database/dao/author.dao.js";
 
-var authorResolvers = {
+const authorDao = new AuthorDao();
+
+export const authorResolvers = {
     Query: {
         authors: () => {
             return authorDao.getAll();
@@ -20,5 +22,3 @@ var authorResolvers = {
         }
     }
 };
-
-module.exports = authorResolvers;

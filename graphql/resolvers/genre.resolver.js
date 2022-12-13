@@ -1,18 +1,17 @@
 'use strict';
 
-var genreDao = require('../../database/dao/genre.dao');
+import {GenreDao} from "../../database/dao/genre.dao.js";
 
-var genreResolvers = {
+const genreDao = new GenreDao();
+
+export const genreResolvers = {
     Query: {
-        genres: () => {
-
-            var genres = genreDao.getAll();
-
-            return genres;
+        genres: async () => {
+            return genreDao.getAll();
         }
     },
     Mutation: {
-        addGenre: (parent, args) => {
+        addGenre: async (parent, args) => {
             return genreDao.insert(
                 args.name,
                 args.genreId
@@ -20,5 +19,3 @@ var genreResolvers = {
         }
     }
 };
-
-module.exports = genreResolvers;

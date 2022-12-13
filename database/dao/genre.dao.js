@@ -1,73 +1,73 @@
 'use strict';
 
-var db = require('../../services/mysql');
-var Genre = require('../entity/genre.entity');
+import {Genre} from "../entity/genre.entity.js";
+import {connection} from '../../services/mysql.js';
 
-var genreDao = {};
+export class GenreDao {
 
-genreDao.insert = function (name) {
-    return new Promise((resolve, reject) => {
+    async insert(name) {
+        return new Promise((resolve, reject) => {
 
-        var sql = `
-            INSERT INTO genre (name)
-            VALUES (:name)
-        `;
+            const sql = `
+                INSERT INTO genre (name)
+                VALUES (:name)
+            `;
 
-        var params = {
-            name
-        };
-
-        db.query(sql, params, function (error, results) {
-            if (error) {
-                reject(error);
-            }
-
-            var genre = new Genre(
-                results.insertId,
+            var params = {
                 name
-            );
+            };
 
-            resolve(genre);
-        });
-
-    });
-};
-
-genreDao.getAll = function (offset = 0, results = 100) {
-    return new Promise((resolve, reject) => {
-
-        var sql = `
-            SELECT *
-            FROM genre
-            LIMIT :offset,:results`;
-
-        var params = {
-            offset,
-            results
-        };
-
-        db.query(sql, params, (error, results) => {
-            if (error) {
-                reject(error);
-            }
-
-            var items = [];
-
-            results.forEach(result => {
+            connection.query(sql, params, function(error, results) {
+                if (error) {
+                    reject(error);
+                }
 
                 var genre = new Genre(
-                    result.id,
-                    result.name
+                    results.insertId,
+                    name
                 );
 
-                items.push(genre);
-
+                resolve(genre);
             });
 
-            resolve(items);
         });
+    }
 
-    });
-};
+    async getAll(offset = 0, results = 100) {
+        return new Promise((resolve, reject) => {
 
-module.exports = genreDao;
+            const sql = `
+                SELECT *
+                FROM genre
+                LIMIT :offset,:results
+            `;
+
+            var params = {
+                offset,
+                results
+            };
+
+            connection.query(sql, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                }
+
+                var items = [];
+
+                results.forEach(result => {
+
+                    var genre = new Genre(
+                        result.id,
+                        result.name
+                    );
+
+                    items.push(genre);
+
+                });
+
+                resolve(items);
+            });
+
+        });
+    }
+}

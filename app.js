@@ -1,21 +1,14 @@
-const express = require('express');
-const {ApolloServer, gql} = require('apollo-server-express');
-const cors = require('cors');
-const config = require('./config');
+import express from 'express';
+import cors from 'cors';
+import config from './config.js';
+import {ApolloServer} from '@apollo/server';
+import {expressMiddleware} from '@apollo/server/express4';
+import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
+import {AuthorType, BookType, GenreType} from "./graphql/types/index.js";
+import {authorResolvers, bookResolvers, genreResolvers} from "./graphql/resolvers/index.js";
+import http from 'http';
 
-const {
-    bookType,
-    genreType,
-    authorType
-} = require('./graphql/types');
-
-const {
-    bookResolvers,
-    genreResolvers,
-    authorResolvers
-} = require('./graphql/resolvers');
-
-const typeDefs = gql`
+const TypeDefs = `#graphql
   type Query { 
     _empty: String
   }
@@ -25,18 +18,29 @@ const typeDefs = gql`
   }
 `;
 
-const server = new ApolloServer({
-    typeDefs: [typeDefs, bookType, genreType, authorType],
-    resolvers: [bookResolvers, genreResolvers, authorResolvers],
-    debug: false
-});
-
 const app = express();
 
-app.use(cors());
+const httpServer = http.createServer(app);
 
-server.applyMiddleware({app});
+const server = new ApolloServer({
+    typeDefs: [TypeDefs, BookType, GenreType, AuthorType],
+    resolvers: [bookResolvers, genreResolvers, authorResolvers],
+    plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
+    includeStacktraceInErrorResponses: false
+});
 
-app.listen({port: config.port}, () =>
-    console.log(`Now browse to http://localhost:${config.port}${server.graphqlPath}`)
-);
+await server.start();
+
+app.use(
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+        context: async ({req}) => ({
+            //token: req.headers.token
+        }),
+    }),
+)
+
+await new Promise((resolve) => httpServer.listen({port: config.port}, resolve));
+
+console.log(`Server ready at http://localhost:${config.port}/graphql`);

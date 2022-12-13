@@ -1,66 +1,69 @@
 'use strict';
 
-var bookDao = require('../dao/book.dao');
-var genreDao = require('../dao/genre.dao');
-var authorDao = require('../dao/author.dao');
+import {BookDao} from "../dao/book.dao.js";
+import {GenreDao} from "../dao/genre.dao.js";
+import {AuthorDao} from "../dao/author.dao.js";
 
-var bookHelper = {};
+export class BookHelper {
 
-bookHelper.addBook = async function (nombre, genreId, authorIds) {
-    var book = await bookDao.insert(nombre, genreId);
-    console.log(authorIds, book.id);
-    authorIds.forEach(async function(authorId){
-       await bookDao.insertAuthor(book.id, authorId);
-    });
+    constructor() {
+        this.bookDao = new BookDao();
+        this.genreDao = new GenreDao();
+        this.authorDao = new AuthorDao();
+    }
 
-    var books=[book];
+    async addBook(nombre, genreId, authorIds) {
+        var book = await bookDao.insert(nombre, genreId);
 
-    await addGenre([book]);
-    await addAuthors([book]);
+        authorIds.forEach(async function(authorId) {
+            await this.bookDao.insertAuthor(book.id, authorId);
+        });
 
-    return books[0];
-};
-
-bookHelper.getAll = async function (genreId) {
-    var books = await bookDao.getAll(genreId);
-
-    await addGenre(books);
-    await addAuthors(books);
-
-    return books;
-};
-
-bookHelper.getById = async function (genreId) {
-    var book = await bookDao.getById(genreId);
-
-    if (null !== book) {
         var books = [book];
-        await addGenre(books);
-        await addAuthors(books);
+
+        await this._addGenre([book]);
+        await this._addAuthors([book]);
 
         return books[0];
     }
 
-    return null;
-};
+    async getAll(genreId) {
+        var books = await this.bookDao.getAll(genreId);
 
-var addGenre = async function (books) {
-    var genres = await genreDao.getAll();
+        await this._addGenre(books);
+        await this._addAuthors(books);
 
-    books.forEach(book => {
-        var bookGenre = genres.find(genre => {
-            return book.genreId === genre.id;
+        return books;
+    };
+
+    async getById(genreId) {
+        var book = await this.bookDao.getById(genreId);
+
+        if (null !== book) {
+            var books = [book];
+            await this._addGenre(books);
+            await this._addAuthors(books);
+
+            return books[0];
+        }
+
+        return null;
+    }
+
+    async _addGenre(books) {
+        var genres = await this.genreDao.getAll();
+
+        books.forEach(book => {
+            book.genre = genres.find(genre => {
+                return book.genreId === genre.id;
+            });
         });
+    }
 
-        book.genre = bookGenre;
-    });
-};
+    async _addAuthors(books) {
+        books.forEach(book => {
+            book.authors = this.authorDao.getByBook(book.id);
+        });
+    }
 
-
-var addAuthors = async function(books) {
-    books.forEach(book => {
-        book.authors = authorDao.getByBook(book.id);
-    });
-};
-
-module.exports = bookHelper;
+}

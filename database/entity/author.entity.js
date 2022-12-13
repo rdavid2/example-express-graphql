@@ -1,6 +1,6 @@
 'use strict';
 
-class Author {
+export class Author {
     constructor(
         id,
         name
@@ -9,5 +9,3 @@ class Author {
         this.name = name;
     }
 }
-
-module.exports = Author;

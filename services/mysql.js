@@ -1,9 +1,9 @@
 'use strict';
 
-var mysql = require('mysql');
-const config = require('../config');
+import mysql from 'mysql';
+import config from '../config.js';
 
-var connection = mysql.createConnection({
+export const connection = mysql.createConnection({
     host: config.db.host,
     user: config.db.user,
     password: config.db.password,
@@ -26,5 +26,3 @@ connection.connect(function (err) {
         throw new Error(`Can't connect to MySQL`);
     }
 });
-
-module.exports = connection;

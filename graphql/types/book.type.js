@@ -1,8 +1,6 @@
 'use strict';
 
-const {gql} = require('apollo-server-express');
-
-var BookType = gql`
+export const BookType = `#graphql
     type Book {
         id: ID!
         name: String!
@@ -18,12 +16,10 @@ var BookType = gql`
      
      extend type Mutation {
          addBook(
-            name: String!
+            name: String! 
             genreId: Int!,
             authorIds: [Int]!
         ): Book
     } 
 `;
-
-module.exports = BookType;
 

@@ -1,20 +1,22 @@
 'use strict';
 
-var authorDao = require('../dao/author.dao');
+import {AuthorDao} from "../dao/author.dao.js";
 
-var authorHelper = {};
+export class authorHelper {
 
-authorHelper.addAuthor = async function (nombre, genreId) {
-    return await authorDao.insert(nombre, genreId);
-};
+    constructor() {
+        this.authorDao = new AuthorDao();
+    }
 
-authorHelper.getAll = async function (genreId) {
-    return await authorDao.getAll(genreId);
-};
+    async addAuthor(nombre, genreId) {
+        return await this.authorDao.insert(nombre, genreId);
+    }
 
-authorHelper.getById = async function (genreId) {
-    return await authorDao.getById(genreId);
-};
+    async getAll(genreId) {
+        return await this.authorDao.getAll(genreId);
+    }
 
-
-module.exports = authorHelper;
+    async getById(genreId) {
+        return await this.authorDao.getById(genreId);
+    }
+}
